@@ -48,14 +48,14 @@ pub fn main() {
     let font_path = assets.join("fonts/NotoSans/NotoSans-Regular.ttf");
     ui.fonts.insert_from_file(font_path).unwrap();
 
-    // create a textrue to use for caching text on the GPU
+    // create a texture to use for caching text on the GPU
     let mut text_vertex_data = Vec::new();
     let (mut glyph_cache, mut text_texture_cache) = {
         const SCALE_TOLERANCE: f32 = 0.1;
         const POSITION_TOLERANCE: f32 = 0.1;
         let cache = conrod::text::GlyphCache::new(WIDTH, HEIGHT, SCALE_TOLERANCE, POSITION_TOLERANCE);
         let buffer_len = WIDTH as usize * HEIGHT as usize;
-        let init = vec![128, buffer_len];
+        let init = vec![128; buffer_len];
         let settings = TextureSettings::new();
         let factory = &mut window.factory;
         let texture = G2dTexture::from_memory_alpha(factory, &init, WIDTH, HEIGHT, &settings).unwrap();
