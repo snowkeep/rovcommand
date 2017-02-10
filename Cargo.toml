@@ -1,0 +1,20 @@
+[package]
+name = "rovcommand"
+version = "0.1.0"
+authors = ["Craig Joly <craig@snowkeep.ca>"]
+
+[dependencies]
+#conrod = "0.51.1"
+piston_window = "0.64.0"
+find_folder = "0.3.0"
+piston2d-graphics = "0.21.1"
+#piston2d-graphics = { version = "0.21.1", optional = true }
+#glium = 0.16.0
+#winit = 0.5.10
+
+#[features]
+#piston = []
+
+[dependencies.conrod]
+version = "0.51.1"
+features = ["piston"]
