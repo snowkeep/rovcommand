@@ -4,10 +4,11 @@ version = "0.1.0"
 authors = ["Craig Joly <craig@snowkeep.ca>"]
 
 [dependencies]
-piston_window = "0.64.0"
 find_folder = "0.3.0"
-piston2d-graphics = "0.21.1"
+glium = "0.16.0"
+winit = "0.5.10"
+#image = "0.12.3"
 
 [dependencies.conrod]
 version = "0.51.1"
-features = ["piston"]
+features = ["winit", "glium"]
