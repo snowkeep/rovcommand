@@ -2,8 +2,9 @@
 This will be a programming game written in Rust, with Conrod as the GUI.  You will be programming a Remote Operated Vehicle, either a submarine or surface vessel, most like in Dyon.  It is heavily influenced by Robocode and Scalatron.
 
 Current status:
-   * does not compile
-   * almost has a Conrod GUI window
+   * switched to glium backend from piston_window
+   * project compiles
+   * there is a very basic UI layout, with nothing in it
    
 Plans:
    * surface vehicle
