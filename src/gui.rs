@@ -6,6 +6,9 @@ use conrod::backend::glium::glium;
 use conrod::backend::glium::glium::{DisplayBuild, Surface};
 use std;
 
+const WIN_W: u32 = 1024;
+const WIN_H: u32 = 768;
+
 pub struct GuiState {
     rovs: u32,
     state: u32
@@ -21,8 +24,6 @@ impl GuiState {
 }
 
 pub fn main() {
-    const WIN_W: u32 = 1024;
-    const WIN_H: u32 = 768;
 
     // build the window
     let display = glium::glutin::WindowBuilder::new()
@@ -76,8 +77,11 @@ pub fn main() {
             }
         }
 
-        // instantiate gui
+        // set up the game window layout
         layout(&mut ui.set_widgets(), &ids, &mut state);
+
+//        // instantiate gui
+//        build_board_ui(ui);
 
         // draw the ui
         if let Some(primitives) = ui.draw_if_changed() {
@@ -118,10 +122,20 @@ fn theme() -> conrod::Theme {
 // generate unique 'WidgetId' for each widget
 widget_ids! {
     pub struct Ids {
-        canvas,
+        // window layout canvases
+        app,       // full window  
+        game,       // top half - play and control
+        board,      // view and Controls
+        view_port,   
+        controls,
+        status,     // ROV selection and status
+        console
     }
 }
 
+//fn build_board_ui(ui &mut conrod:UiCell, ids: &Ids, state: &mut GuiState) {
+//    widget::Canvas::new()
+//}
 // instantiate the gui
 fn layout(ui: &mut conrod::UiCell, ids: &Ids, state: &mut GuiState) {
     use conrod::{widget, Colorable, Labelable, Positionable, Sizeable, Widget};
@@ -130,7 +144,16 @@ fn layout(ui: &mut conrod::UiCell, ids: &Ids, state: &mut GuiState) {
     const SHAPE_GAP: conrod::Scalar = 50.0;
     
 //    const TITLE: &'static str = "ROV Command";
-    widget::Canvas::new().pad(MARGIN).set(ids.canvas, ui);
+    widget::Canvas::new().flow_down(&[
+        (ids.game, widget::Canvas::new().length((WIN_H * 3/4) as f64).flow_right(&[
+            (ids.board, widget::Canvas::new().length((WIN_W * 5/6) as f64).flow_down(&[
+                (ids.view_port, widget::Canvas::new().length((WIN_H * 11/16) as f64).color(conrod::color::BLUE)),
+                (ids.controls, widget::Canvas::new())
+            ])),
+            (ids.status, widget::Canvas::new().color(conrod::color::LIGHT_CHARCOAL))
+        ])),
+        (ids.console, widget::Canvas::new().color(conrod::color::LIGHT_GREY))
+    ]).set(ids.app, ui);
 }
 
 struct EventLoop {
