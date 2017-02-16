@@ -4,6 +4,7 @@ This will be a programming game written in Rust, with Conrod as the GUI.  You wi
 Current status:
    * does not compile
    * almost has a Conrod GUI window
+   * if anybody can tell me why the context is not being converted to conrod from piston window, that would be helpful
    
 Plans:
    * surface vehicle
