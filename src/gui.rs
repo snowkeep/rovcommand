@@ -141,20 +141,22 @@ widget_ids! {
 // instantiate the gui
 fn layout(ui: &mut conrod::UiCell, ids: &Ids, state: &mut GuiState) {
     use conrod::{widget, Colorable, Labelable, Positionable, Sizeable, Widget};
+    use conrod::color;
 
-    const MARGIN: conrod::Scalar = 30.0;
+
+    const MARGIN: conrod::Scalar = 10.0;
     const SHAPE_GAP: conrod::Scalar = 50.0;
     
     // placement
     widget::Canvas::new().flow_down(&[
         (ids.game, widget::Canvas::new().length((WIN_H * 3/4) as f64).flow_right(&[
             (ids.board, widget::Canvas::new().length((WIN_W * 5/6) as f64).flow_down(&[
-                (ids.view_port, widget::Canvas::new().length((WIN_H * 11/16) as f64).color(conrod::color::BLUE)),
+                (ids.view_port, widget::Canvas::new().length((WIN_H * 11/16) as f64).color(color::BLUE)),
                 (ids.controls, widget::Canvas::new())
             ])),
-            (ids.status, widget::Canvas::new().color(conrod::color::LIGHT_CHARCOAL))
+            (ids.status, widget::Canvas::new().color(color::LIGHT_CHARCOAL))
         ])),
-        (ids.console, widget::Canvas::new().color(conrod::color::LIGHT_GREY))
+        (ids.console, widget::Canvas::new().color(color::LIGHT_GREY))
     ]).set(ids.app, ui);
 
     // concatenate the logs together
@@ -163,16 +165,11 @@ fn layout(ui: &mut conrod::UiCell, ids: &Ids, state: &mut GuiState) {
         log_text = log_text + &format!("{:10}: {}\n", entry[0], entry[1]);
     }
 
-    log_text = log_text + "Program starting up\n";
-
-    widget::Text::new(&log_text)
-        .padded_w_of(ids.console, MARGIN)
-        .color(conrod::color::BLACK)
-        .down(10.0)
-        .align_middle_x_of(ids.console)
-        .left_justify()
-        .line_spacing(2.0)
+    widget::Text::new(log_text)
+        .color(color::BLACK)
+        .top_left_with_margin_on(ids.console, MARGIN)
         .set(ids.console_text, ui);
+
 }
 
 struct EventLoop {
