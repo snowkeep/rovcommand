@@ -11,14 +11,18 @@ const WIN_H: u32 = 768;
 
 pub struct GuiState {
     rovs: u32,
-    state: u32
+    state: u32,
+    log: Vec<[&'static str; 2]>
+
 }
 
 impl GuiState {
     fn new() -> Self {
         GuiState {
             rovs: 0,
-            state: 0
+            state: 0,
+            // vecs of [source, message]
+            log: Vec::new()
         }
     }
 }
@@ -129,13 +133,11 @@ widget_ids! {
         view_port,   
         controls,
         status,     // ROV selection and status
-        console
+        console,
+        console_text
     }
 }
 
-//fn build_board_ui(ui &mut conrod:UiCell, ids: &Ids, state: &mut GuiState) {
-//    widget::Canvas::new()
-//}
 // instantiate the gui
 fn layout(ui: &mut conrod::UiCell, ids: &Ids, state: &mut GuiState) {
     use conrod::{widget, Colorable, Labelable, Positionable, Sizeable, Widget};
@@ -143,7 +145,7 @@ fn layout(ui: &mut conrod::UiCell, ids: &Ids, state: &mut GuiState) {
     const MARGIN: conrod::Scalar = 30.0;
     const SHAPE_GAP: conrod::Scalar = 50.0;
     
-//    const TITLE: &'static str = "ROV Command";
+    // placement
     widget::Canvas::new().flow_down(&[
         (ids.game, widget::Canvas::new().length((WIN_H * 3/4) as f64).flow_right(&[
             (ids.board, widget::Canvas::new().length((WIN_W * 5/6) as f64).flow_down(&[
@@ -154,6 +156,23 @@ fn layout(ui: &mut conrod::UiCell, ids: &Ids, state: &mut GuiState) {
         ])),
         (ids.console, widget::Canvas::new().color(conrod::color::LIGHT_GREY))
     ]).set(ids.app, ui);
+
+    // concatenate the logs together
+    let mut log_text = "".to_string();
+    for entry in &state.log {
+        log_text = log_text + &format!("{:10}: {}\n", entry[0], entry[1]);
+    }
+
+    log_text = log_text + "Program starting up\n";
+
+    widget::Text::new(&log_text)
+        .padded_w_of(ids.console, MARGIN)
+        .color(conrod::color::BLACK)
+        .down(10.0)
+        .align_middle_x_of(ids.console)
+        .left_justify()
+        .line_spacing(2.0)
+        .set(ids.console_text, ui);
 }
 
 struct EventLoop {

@@ -68,9 +68,11 @@ struct Sensor_Data {
 /// ROV - either a surface vessel or a submarine
 enum Vessel {
     Surface(
+        name: String,
         tactical: Tactical,
     ),
     Submarine(
+        name: String,
         tactical: Tactical,
         submerged: bool = false,
     )
