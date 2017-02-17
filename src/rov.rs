@@ -1,5 +1,5 @@
 
-/// ROV tactical status
+/// Vessel tactical status
 struct Tactical {
     /// Current energy of the ROV, where 100 means full energy and 0 means no energy (dead)
     energy: i32 = 100,
@@ -35,13 +35,13 @@ struct Tactical {
     /// current number of other ROVs in the battle
     others: i32,
     /// latest data for the nearest ROV scanned by radar
-    radar: Scan_Data,
+    radar: Sensor,
     /// latest data for the nearest ROV scanned by active sonar
-    active: Scan_Data,
+    active: Sensor,
     /// latest data for the nearest ROV scanned by passive sonar
-    passive: Scan_Data,
+    passive: Sensor,
     /// latest data for the nearest torpedo scanned by either sonar
-    torpedo: Scan_data
+    torpedo: Sensor
 
 }
 
@@ -51,7 +51,8 @@ struct Tactical {
 // TODO: add in active and passive sonar results
 // TODO: add in torpedo tracking
 
-struct Scan_Data {
+/// Sensor data
+struct Sensor_Data {
     /// current angle to the object (in degrees)
     angle: i32,
     /// current angle to the object (in degrees), relative to the body
@@ -64,8 +65,9 @@ struct Scan_Data {
     velocity: i32
 }
 
-enum ROV {
-    SurfaceVessel(
+/// ROV - either a surface vessel or a submarine
+enum Vessel {
+    Surface(
         tactical: Tactical,
     ),
     Submarine(
@@ -74,42 +76,27 @@ enum ROV {
     )
 }
 
-impl JuniorROV for ROV {
-/* 
-    pub fn new() 
-    pub fn forward(distance: i32, speed: i32)
-    pub fn backward(distance: i32, speed: i32)
-    pub fn left(angle: i32, speed: i32)
-    pub fn right(angle: i32, speed: i32)
-    pub fn forward_left(distance: i32, angle: i32, speed: i32)
-    pub fn forward_right(distance: i32, angle: i32, speed: i32)
-    pub fn backward_left(distance: i32, angle: i32, speed: i32)
-    pub fn backward_right(distance: i32, angle: i32, speed: i32)
-    pub fn turn_to(angle: i32, speed: i32)
-
-    pub fn gun_left(angle: i32)
-    pub fn gun_right(angle: i32)
-    pub fn gun_bear_to(angle: i32)
-    pub fn gun_to(angle: i32)
-    pub fn fire(power: i32)
-
-    pub fn torpedo(Vec<Vec<i32,i32>>, power: i32)
-    pub fn depth_charge(power: i32)
-
-    pub fn nop(turns)
-
-    pub fn toggle_submerge()
-
-    pub fn get_heading
-    pub fn get_x
-    put fn get_y
-
-    fn on_hit_by_bullet()
-    fn on_hit_robot()
-    fn on_hit_wall()
-
-    fn on_scanned_robot()
-
-    fn run()
+/// trait to implement the ROV code
+trait ROV {
+    /// Main ROV method
+    fn run();
+    /// Called by MCP when radar senses a ROV
+    fn on_radar_rov() {};
+    /// Called by MCP when either active or passive sonar senses a ROV
+    fn on_sonar_rov() {};
+    /// Called by MCP when either active or passive sonar senses a torpedo
+    fn on_sonar_torpedo() {};
+    /// Called by MCP when ROV is hit by a bullet
+    fn on_hit_bullet() {};
+    /// Called by MCP when ROV is hit by torpedo blast
+    fn on_hit_torpedo() {};
+    /// Called by MCP when ROV is hit by depth charge blast
+    fn on_hit_charge() {};
+    /// Called by MCP when ROV collides with another ROV
+    fn on_hit_rov() {};
+    /// Called by MCP when ROV collides with wall
+    fn on_hit_wall() {};
+    /// Called by MCP when ROV collides with a rock
+    fn on_hit_rock() {};
 
 }
