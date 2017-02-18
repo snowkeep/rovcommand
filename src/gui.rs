@@ -165,7 +165,7 @@ fn layout(ui: &mut conrod::UiCell, ids: &Ids, state: &mut GuiState) {
         log_text = log_text + &format!("{:10}: {}\n", entry[0], entry[1]);
     }
 
-    widget::Text::new(log_text)
+    widget::Text::new(&log_text)
         .color(color::BLACK)
         .top_left_with_margin_on(ids.console, MARGIN)
         .set(ids.console_text, ui);
