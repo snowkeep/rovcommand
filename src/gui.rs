@@ -6,28 +6,25 @@ use conrod::backend::glium::glium;
 use conrod::backend::glium::glium::{DisplayBuild, Surface};
 use std;
 
+use chan::{Receiver, Sender};
+
 const WIN_W: u32 = 1024;
 const WIN_H: u32 = 768;
 
-pub struct GuiState {
-    rovs: u32,
-    state: u32,
+struct GuiState {
     log: Vec<[&'static str; 2]>
-
 }
 
 impl GuiState {
     fn new() -> Self {
         GuiState {
-            rovs: 0,
-            state: 0,
             // vecs of [source, message]
             log: Vec::new()
         }
     }
 }
 
-pub fn main() {
+pub fn main(log_recv: Receiver<[&'static str; 2]>) {
 
     // build the window
     let display = glium::glutin::WindowBuilder::new()
@@ -79,6 +76,12 @@ pub fn main() {
                     break 'main,
                 _ => {},
             }
+        }
+
+        // check for new log info and if there is, append to state.log
+        chan_select!{
+            default => (),
+            log_recv.recv() -> b => state.log.push(b.unwrap())
         }
 
         // set up the game window layout
@@ -140,12 +143,12 @@ widget_ids! {
 
 // instantiate the gui
 fn layout(ui: &mut conrod::UiCell, ids: &Ids, state: &mut GuiState) {
-    use conrod::{widget, Colorable, Labelable, Positionable, Sizeable, Widget};
+    use conrod::{widget, Colorable, Positionable, Widget};
     use conrod::color;
 
 
     const MARGIN: conrod::Scalar = 10.0;
-    const SHAPE_GAP: conrod::Scalar = 50.0;
+//    const SHAPE_GAP: conrod::Scalar = 50.0;
     
     // placement
     widget::Canvas::new().flow_down(&[
@@ -214,4 +217,35 @@ impl EventLoop {
     pub fn needs_update(&mut self) {
         self.ui_needs_update = true;
     }
+}
+
+#[cfg(test)]
+mod tests {
+    extern crate chan;
+    extern crate rand;
+    
+    use gui::*;
+    use chan::{Receiver, Sender};
+    use std::{thread, time};
+    use self::rand::Rng;
+
+    #[test]
+    fn send_to_gui() {
+        let (log_send, log_recv) = chan::sync(0);
+
+        let ui = thread::spawn(|| {
+            main(log_recv);
+        });
+
+        let delay_s = rand::thread_rng().gen_range(1, 10);
+        let delay = time::Duration::new(delay_s, 0);
+        chan_select! {
+            default => {},
+            log_send.send(["test enging", "test log message"]) => {},
+        }
+
+        let _ = ui.join();
+
+    }
+
 }

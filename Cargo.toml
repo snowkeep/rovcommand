@@ -7,8 +7,12 @@ authors = ["Craig Joly <craig@snowkeep.ca>"]
 find_folder = "0.3.0"
 glium = "0.16.0"
 winit = "0.5.10"
+chan = "0.1.19"
 #image = "0.12.3"
 
 [dependencies.conrod]
 version = "0.51.1"
 features = ["winit", "glium"]
+
+[dev-dependencies]
+rand = "0.3.15"
