@@ -5,14 +5,15 @@ use conrod;
 use conrod::backend::glium::glium;
 use conrod::backend::glium::glium::{DisplayBuild, Surface};
 use std;
+use std::sync::mpsc::Receiver;
 
-use chan::{Receiver, Sender};
+//use chan::{Receiver, Sender};
 
 const WIN_W: u32 = 1024;
 const WIN_H: u32 = 768;
 
 struct GuiState {
-    log: Vec<[&'static str; 2]>
+    log: Vec<[String; 2]>
 }
 
 impl GuiState {
@@ -24,7 +25,7 @@ impl GuiState {
     }
 }
 
-pub fn main(log_recv: Receiver<[&'static str; 2]>) {
+pub fn main(log_rx: Receiver<[String; 2]>) {
 
     // build the window
     let display = glium::glutin::WindowBuilder::new()
@@ -79,9 +80,9 @@ pub fn main(log_recv: Receiver<[&'static str; 2]>) {
         }
 
         // check for new log info and if there is, append to state.log
-        chan_select!{
-            default => (),
-            log_recv.recv() -> b => state.log.push(b.unwrap())
+        let new_log = log_rx.try_recv();
+        if new_log.is_ok() {
+            state.log.push(new_log.unwrap());
         }
 
         // set up the game window layout
@@ -130,10 +131,10 @@ fn theme() -> conrod::Theme {
 widget_ids! {
     pub struct Ids {
         // window layout canvases
-        app,       // full window  
+        app,       // full window
         game,       // top half - play and control
         board,      // view and Controls
-        view_port,   
+        view_port,
         controls,
         status,     // ROV selection and status
         console,
@@ -149,7 +150,7 @@ fn layout(ui: &mut conrod::UiCell, ids: &Ids, state: &mut GuiState) {
 
     const MARGIN: conrod::Scalar = 10.0;
 //    const SHAPE_GAP: conrod::Scalar = 50.0;
-    
+
     // placement
     widget::Canvas::new().flow_down(&[
         (ids.game, widget::Canvas::new().length((WIN_H * 3/4) as f64).flow_right(&[
@@ -221,27 +222,30 @@ impl EventLoop {
 
 #[cfg(test)]
 mod tests {
-    extern crate chan;
     extern crate rand;
-    
+
     use gui::*;
-    use chan::{Receiver, Sender};
     use std::{thread, time};
+    use std::sync::mpsc;
+    use std::sync::mpsc::{Sender, Receiver};
+
     use self::rand::Rng;
 
     #[test]
     fn send_to_gui() {
-        let (log_send, log_recv) = chan::sync(0);
+        let (log_tx, log_rx) = mpsc::channel();
 
         let ui = thread::spawn(|| {
-            main(log_recv);
+            main(log_rx);
         });
 
         let delay_s = rand::thread_rng().gen_range(1, 10);
-        let delay = time::Duration::new(delay_s, 0);
-        chan_select! {
-            default => {},
-            log_send.send(["test enging", "test log message"]) => {},
+        for x in 0..10 {
+           println!("pass {}", x);
+            let delay = time::Duration::new(delay_s, 0);
+            thread::sleep(delay);
+            let msg = format!("test log message {}", x);
+            log_tx.send(["test".to_string(), msg]);
         }
 
         let _ = ui.join();
