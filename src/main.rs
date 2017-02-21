@@ -1,9 +1,7 @@
 #[macro_use] extern crate conrod;
-//#[macro_use] extern crate chan;
 
 use std::thread;
 use std::sync::mpsc;
-use std::sync::mpsc::{Sender, Receiver};
 
 pub mod gui;
 

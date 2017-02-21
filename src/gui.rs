@@ -7,8 +7,6 @@ use conrod::backend::glium::glium::{DisplayBuild, Surface};
 use std;
 use std::sync::mpsc::Receiver;
 
-//use chan::{Receiver, Sender};
-
 const WIN_W: u32 = 1024;
 const WIN_H: u32 = 768;
 
@@ -215,6 +213,7 @@ impl EventLoop {
 
     // notifies event loop that the ui needs another update
     // primarily used when parts of the ui are still animating
+    // TODO: widget neets to be updated
     pub fn needs_update(&mut self) {
         self.ui_needs_update = true;
     }
@@ -227,7 +226,6 @@ mod tests {
     use gui::*;
     use std::{thread, time};
     use std::sync::mpsc;
-    use std::sync::mpsc::{Sender, Receiver};
 
     use self::rand::Rng;
 
@@ -245,7 +243,7 @@ mod tests {
             let delay = time::Duration::new(delay_s, 0);
             thread::sleep(delay);
             let msg = format!("test log message {}", x);
-            log_tx.send(["test".to_string(), msg]);
+            let _ = log_tx.send(["test".to_string(), msg]);
         }
 
         let _ = ui.join();
