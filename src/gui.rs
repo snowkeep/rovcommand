@@ -136,7 +136,8 @@ widget_ids! {
         controls,
         status,     // ROV selection and status
         console,
-        console_text
+        console_text,
+        console_scrollbar
     }
 }
 
@@ -158,8 +159,10 @@ fn layout(ui: &mut conrod::UiCell, ids: &Ids, state: &mut GuiState) {
             ])),
             (ids.status, widget::Canvas::new().color(color::LIGHT_CHARCOAL))
         ])),
-        (ids.console, widget::Canvas::new().color(color::LIGHT_GREY))
+        (ids.console, widget::Canvas::new().color(color::LIGHT_GREY).scroll_kids_vertically())
     ]).set(ids.app, ui);
+
+    widget::Scrollbar::y_axis(ids.console).color(color::DARK_CHARCOAL).set(ids.console_scrollbar, ui);
 
     // concatenate the logs together
     let mut log_text = "".to_string();
@@ -237,10 +240,11 @@ mod tests {
             main(log_rx);
         });
 
-        let delay_s = rand::thread_rng().gen_range(1, 10);
-        for x in 0..10 {
+ //       let delay_s = rand::thread_rng().gen_range(1, 10);
+        let delay = time::Duration::new(1, 0);
+        for x in 0..11 {
            println!("pass {}", x);
-            let delay = time::Duration::new(delay_s, 0);
+//            let delay = time::Duration::new(delay_s, 0);
             thread::sleep(delay);
             let msg = format!("test log message {}", x);
             let _ = log_tx.send(["test".to_string(), msg]);
