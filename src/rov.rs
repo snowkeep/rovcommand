@@ -10,7 +10,7 @@ struct Tactical {
     /// Current horizontal location of this ROV
     x: i32,
     /// Current vertical location of this ROV
-    y: i32, 
+    y: i32,
 
     /// current gun heading of this ROV (in degrees), relative to the body
     gun_bearing: i32,
@@ -80,6 +80,8 @@ enum Vessel {
 
 /// trait to implement the ROV code
 trait ROV {
+    /// set up ROV
+    fn init() {};
     /// Main ROV method
     fn run();
     /// Called by MCP when radar senses a ROV
