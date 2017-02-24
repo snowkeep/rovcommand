@@ -1,11 +1,13 @@
 extern crate find_folder;
 //extern crate image;
 
+use message;
+
 use conrod;
 use conrod::backend::glium::glium;
 use conrod::backend::glium::glium::{DisplayBuild, Surface};
 use std;
-use std::sync::mpsc::Receiver;
+use std::sync::mpsc::{Receiver, Sender};
 
 const WIN_W: u32 = 1024;
 const WIN_H: u32 = 768;
@@ -23,7 +25,7 @@ impl GuiState {
     }
 }
 
-pub fn main(log_rx: Receiver<[String; 2]>) {
+pub fn main(log_rx: Receiver<[String; 2]>, ctrl_tx: Sender<message::Ctrl>) {
 
     // build the window
     let display = glium::glutin::WindowBuilder::new()
@@ -235,9 +237,10 @@ mod tests {
     #[test]
     fn send_to_gui() {
         let (log_tx, log_rx) = mpsc::channel();
+        let (ctrl_tx, ctrl_rx) = mpsc::channel();
 
         let ui = thread::spawn(|| {
-            main(log_rx);
+            main(log_rx, ctrl_tx);
         });
 
  //       let delay_s = rand::thread_rng().gen_range(1, 10);
