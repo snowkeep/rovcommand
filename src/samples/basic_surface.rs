@@ -1,16 +1,14 @@
-use rov;
-use rov::{Vessel, ROV};
-use rov::basic;
+use rov::Vessel;
 use rov::basic::BasicROV;
 
-pub struct Basic_Surface {
+pub struct BasicSurface {
     rov: Vessel
 }
 
-impl Basic_Surface {
+impl BasicSurface {
     pub fn init() -> Self {
         let rov: Vessel = BasicROV::new("Basic Surface Vessel", "surface");
-        Basic_Surface {
+        BasicSurface {
             rov: rov
         }
     }

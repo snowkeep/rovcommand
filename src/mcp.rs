@@ -2,8 +2,7 @@
 // This is the main simulation engine for rovcommand
 
 use message;
-use samples;
-use samples::basic_surface::Basic_Surface;
+use samples::basic_surface::BasicSurface;
 
 use std::sync::mpsc::Receiver;
 
@@ -13,7 +12,7 @@ pub fn main(ctrl_rx: Receiver<message::Ctrl>) {
     // randomize starting locations for rovs
     // run simulation
         // check ROV queue
-    let rov1 = samples::basic_surface::Basic_Surface::init();
+    let rov1 = BasicSurface::init();
 
 /*
     'main: loop {
