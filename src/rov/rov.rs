@@ -1,5 +1,3 @@
-mod rov;
-
 ///
 /// This is the simplest ROV type, with a simplified model.
 ///
@@ -9,8 +7,8 @@ mod rov;
 /// completed and take at least one turn to execute.
 ///
 impl BasicROV for Vessel {
-/* 
-    pub fn new() 
+/*
+    pub fn new()
     pub fn forward(&self, distance: i32, speed: i32)
     pub fn backward(&self, distance: i32, speed: i32)
     pub fn left(&self, angle: i32, speed: i32)

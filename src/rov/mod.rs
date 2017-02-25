@@ -1,10 +1,12 @@
+pub mod basic;
 
 /// Vessel tactical status
-struct Tactical {
+#[derive(Default)]
+pub struct Tactical {
     /// Current energy of the ROV, where 100 means full energy and 0 means no energy (dead)
-    energy: i32 = 100,
+    energy: i32,
     /// Current flak (torpedo stopper count)
-    flak: i32 = 100,
+    flak: i32,
     /// Current heading angle of this ROV (in degrees)
     heading: i32,
     /// Current horizontal location of this ROV
@@ -17,7 +19,7 @@ struct Tactical {
     /// current gun heading of this ROV
     gun_heading: i32,
     /// flag specifying if the gun is ready to fire
-    gun_ready: bool
+    gun_ready: bool,
 
     /// latest angle from where this ROV was hit by a bullet (in degrees)
     hit_bullet_angle: i32,
@@ -35,13 +37,13 @@ struct Tactical {
     /// current number of other ROVs in the battle
     others: i32,
     /// latest data for the nearest ROV scanned by radar
-    radar: Sensor,
+    radar: Sensor_Data,
     /// latest data for the nearest ROV scanned by active sonar
-    active: Sensor,
+    active: Sensor_Data,
     /// latest data for the nearest ROV scanned by passive sonar
-    passive: Sensor,
+    passive: Sensor_Data,
     /// latest data for the nearest torpedo scanned by either sonar
-    torpedo: Sensor
+    torpedo: Sensor_Data
 
 }
 
@@ -52,6 +54,7 @@ struct Tactical {
 // TODO: add in torpedo tracking
 
 /// Sensor data
+#[derive(Default)]
 struct Sensor_Data {
     /// current angle to the object (in degrees)
     angle: i32,
@@ -66,28 +69,28 @@ struct Sensor_Data {
 }
 
 /// ROV - either a surface vessel or a submarine
-enum Vessel {
-    Surface(
+pub enum Vessel {
+    Surface {
         name: String,
         tactical: Tactical,
-    ),
-    Submarine(
+    },
+    Submarine {
         name: String,
         tactical: Tactical,
-        submerged: bool = false,
-    )
+        submerged: bool,
+    }
 }
 
 /// trait to implement the ROV code
-trait ROV {
+pub trait ROV {
     /// set up ROV
-    fn init() {};
+    fn init() -> Self;
     /// Main ROV method
-    fn run();
-    /// Called by MCP when radar senses a ROV
-    fn on_radar_rov() {};
+    fn run(&self) -> ();
+/*    /// Called by MCP when radar senses a ROV
+    fn on_radar_rov() {_};
     /// Called by MCP when either active or passive sonar senses a ROV
-    fn on_sonar_rov() {};
+/   fn on_sonar_rov() -> () {}
     /// Called by MCP when either active or passive sonar senses a torpedo
     fn on_sonar_torpedo() {};
     /// Called by MCP when ROV is hit by a bullet
@@ -102,5 +105,5 @@ trait ROV {
     fn on_hit_wall() {};
     /// Called by MCP when ROV collides with a rock
     fn on_hit_rock() {};
-
+*/
 }

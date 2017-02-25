@@ -6,6 +6,8 @@ use std::sync::mpsc;
 mod gui;
 mod mcp;
 mod message;
+pub mod samples;
+pub mod rov;
 
 fn main() {
 
