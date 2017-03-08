@@ -1,22 +1,24 @@
-use rov::Vessel;
+use rov::{Vessel, Type};
 use rov::basic::BasicROV;
 
 pub struct BasicSurface {
-    rov: Vessel
+    pub vessel: Vessel
 }
 
 impl BasicSurface {
     pub fn init() -> Self {
-        let rov: Vessel = BasicROV::new("Basic Surface Vessel", "surface");
+        let mut vessel: Vessel = BasicROV::new("Basic Surface Vessel", Type::Surface);
         BasicSurface {
-            rov: rov
+            vessel: vessel
         }
     }
 
-    fn run(&self) {
-        &self.rov.forward(100);
-        &self.rov.gun_left(360);
-        &self.rov.backward(100);
-        &self.rov.gun_right(360);
+    pub fn run(&self) {
+        loop {
+            &self.vessel.forward(100);
+            &self.vessel.gun_left(360);
+            &self.vessel.backward(100);
+            &self.vessel.gun_right(360);
+        }
     }
 }

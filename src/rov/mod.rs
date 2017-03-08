@@ -8,34 +8,34 @@ pub struct Tactical {
     /// Current flak (torpedo stopper count)
     flak: i32,
     /// Current heading angle of this ROV (in degrees)
-    heading: i32,
+    pub heading: f32,
     /// Current horizontal location of this ROV
-    x: i32,
+    pub x: usize,
     /// Current vertical location of this ROV
-    y: i32,
+    pub y: usize,
 
     /// current gun heading of this ROV (in degrees), relative to the body
-    gun_bearing: i32,
+    pub gun_bearing: f32,
     /// current gun heading of this ROV
-    gun_heading: i32,
+    pub gun_heading: f32,
     /// flag specifying if the gun is ready to fire
     gun_ready: bool,
 
     /// latest angle from where this ROV was hit by a bullet (in degrees)
-    hit_bullet_angle: i32,
+    hit_bullet_angle: f32,
     /// latest angle from where this ROV was hit by a bullet (in degrees), relative to the body
-    hit_bullet_bearing: i32,
+    hit_bullet_bearing: f32,
     /// latest angle where this ROV was hit by another ROV (in degrees)
-    hit_robot_angle: i32,
+    hit_robot_angle: f32,
     /// latest angle where this ROV was hit by another ROV (in degrees), relative to the body
-    hit_robot_bearing: i32,
+    hit_robot_bearing: f32,
     /// latest angle where this ROV hit a non-ROV obstruction (in degrees)
-    hit_obs_angle: i32,
+    hit_obs_angle: f32,
     /// latest angle where this ROV hit a non-ROV obstruction (in degrees), relative to the body
-    hit_obs_bearing: i32,
+    hit_obs_bearing: f32,
 
     /// current number of other ROVs in the battle
-    others: i32,
+    pub others: usize,
     /// latest data for the nearest ROV scanned by radar
     radar: Sensor_Data,
     /// latest data for the nearest ROV scanned by active sonar
@@ -57,28 +57,28 @@ pub struct Tactical {
 #[derive(Default)]
 struct Sensor_Data {
     /// current angle to the object (in degrees)
-    angle: i32,
+    angle: f32,
     /// current angle to the object (in degrees), relative to the body
-    bearing: i32,
+    bearing: f32,
     /// current distance to the object
-    distance: i32,
+    distance: f32,
     /// current heading of the object
-    heading: i32,
+    heading: f32,
     /// current velocity of the object
-    velocity: i32
+    velocity: f32
 }
 
 /// ROV - either a surface vessel or a submarine
-pub enum Vessel {
-    Surface {
-        name: String,
-        tactical: Tactical,
-    },
-    Submarine {
-        name: String,
-        tactical: Tactical,
-        submerged: bool,
-    }
+pub enum Type {
+    Surface,
+    Submarine
+}
+
+pub struct Vessel {
+    name: String,
+    pub tactical: Tactical,
+    rov_type: Type,
+    submerged: bool,
 }
 
 /// trait to implement the ROV code

@@ -10,7 +10,7 @@ use rov;
 use rov::Vessel;
 
 pub trait BasicROV {
-    fn new(&'static str, &'static str) -> Self;
+    fn new(&'static str, rov::Type) -> Self;
     fn forward(&self, i32);
     fn backward(&self, i32);
     fn gun_left(&self, i32);
@@ -19,18 +19,16 @@ pub trait BasicROV {
 }
 
 impl BasicROV for Vessel {
-    fn new(name: &'static str, rov_type: &'static str) -> Self {
-        let tactical = rov::Tactical {
+    fn new(name: &'static str, rov_type: rov::Type) -> Self {
+        let mut tactical = rov::Tactical {
             energy: 100,
             flak: 100,
+            heading: 0.0,
             ..Default::default()
         };
-        match rov_type {
-            "surface" => Vessel::Surface { name: name.to_string(), tactical: tactical },
-            "submarine" => Vessel::Submarine { name: name.to_string(), tactical: tactical, submerged: false },
-            _ => panic!("not a valid vessel.  Must be either surface or submarine")
-        }
+        Vessel { name: name.to_string(), tactical: tactical , rov_type: rov_type, submerged: false}
     }
+
     fn forward(&self, distance: i32) {
 
     }
