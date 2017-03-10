@@ -10,6 +10,14 @@ use std::sync::mpsc::Receiver;
 use self::rand::Rng;
 use self::fringe::{OwnedStack, Generator};
 
+use rov;
+use rov::ROV;
+
+struct Rov<ROV> {
+    vessel: ROV,
+    tactical: rov::Tactical
+}
+
 pub fn main(ctrl_rx: Receiver<message::Ctrl>) {
     // TODO: set up the playing field
     let area_w: usize = 1024;
@@ -21,18 +29,21 @@ pub fn main(ctrl_rx: Receiver<message::Ctrl>) {
     // get the list of rovs
     let mut rovs = Vec::new();
     // initialize all ROVs
-    rovs.push(BasicSurface::init());
-
     // randomize starting locations and headings for rovs
-    for mut rov in &rovs {
-        rov.vessel.tactical.x = irng.gen_range(0, area_w);
-        rov.vessel.tactical.y = irng.gen_range(0, area_h);
-        rov.vessel.tactical.heading = frng.gen_range(0.0, 360.0);
-        rov.vessel.tactical.gun_bearing = 0.0;
-        rov.vessel.tactical.gun_heading = rov.vessel.tactical.heading.clone();
+//    for mut rov in &rovs {
+//    }
+    rovs.push( Rov {
+                    vessel: BasicSurface::init(),
+                    tactical: rov::Tactical {
+                        x: irng.gen_range(0, area_w),
+                        y: irng.gen_range(0, area_h),
+                        heading: frng.gen_range(0.0, 360.0),
+                        gun_bearing: 0.0,
+                        ..Default::default()
+                    }
+                }
+    );
 
-        rov.vessel.tactical.others = rovs.len();
-    }
 
 
 

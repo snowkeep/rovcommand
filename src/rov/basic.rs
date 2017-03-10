@@ -20,13 +20,7 @@ pub trait BasicROV {
 
 impl BasicROV for Vessel {
     fn new(name: &'static str, rov_type: rov::Type) -> Self {
-        let mut tactical = rov::Tactical {
-            energy: 100,
-            flak: 100,
-            heading: 0.0,
-            ..Default::default()
-        };
-        Vessel { name: name.to_string(), tactical: tactical , rov_type: rov_type, submerged: false}
+        Vessel { name: name.to_string(), rov_type: rov_type }
     }
 
     fn forward(&self, distance: i32) {
