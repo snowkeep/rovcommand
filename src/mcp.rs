@@ -32,19 +32,24 @@ pub fn main(ctrl_rx: Receiver<message::Ctrl>) {
     // randomize starting locations and headings for rovs
 //    for mut rov in &rovs {
 //    }
-    rovs.push( Rov {
-                    vessel: BasicSurface::init(),
-                    tactical: rov::Tactical {
-                        x: irng.gen_range(0, area_w),
-                        y: irng.gen_range(0, area_h),
-                        heading: frng.gen_range(0.0, 360.0),
-                        gun_bearing: 0.0,
-                        ..Default::default()
-                    }
-                }
+    rovs.push(
+        Rov {
+            vessel: BasicSurface::init(),
+            tactical: rov::Tactical {
+                x: irng.gen_range(0, area_w),
+                y: irng.gen_range(0, area_h),
+                heading: frng.gen_range(0.0, 360.0),
+                gun_bearing: 0.0,
+                ..Default::default()
+            }
+        }
     );
 
-
+    // TODO: this is not going to work because I need to push the yielder down to the vessel methods
+    for rov in &rovs {
+        let stack = OwnedStack::new(1 << 16);
+        let mut gen = Generator::new(stack, move |yielder, ()| { rov.vessel.run() });
+    }
 
 
     // run simulation
