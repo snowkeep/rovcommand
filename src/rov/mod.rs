@@ -70,8 +70,12 @@ pub struct SensorData {
 
 /// ROV - either a surface vessel or a submarine
 pub enum Type {
-    Surface,
-    Submarine
+    BasicSurfaceROV,
+    BasicSubmarineROV,
+    SurfaceROV,
+    SubmarineROV,
+    AdvanceSurfaceROV,
+    AdvanceSubmarineROV,
 }
 
 pub struct Vessel {
@@ -82,7 +86,7 @@ pub struct Vessel {
 /// trait to implement the ROV code
 pub trait ROV {
     /// set up ROV
-    fn init() -> Self;
+    fn init(vessel: Vessel) -> Self;
     /// Main ROV method
     fn run(&self) -> ();
 /*    /// Called by MCP when radar senses a ROV

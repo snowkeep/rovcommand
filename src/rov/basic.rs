@@ -8,9 +8,10 @@
 ///
 use rov;
 use rov::Vessel;
+use fringe::generator::Yielder;
 
 pub trait BasicROV {
-    fn new(&'static str, rov::Type) -> Self;
+    fn new(&'static str, rov::Type, &Yielder<(), i32>) -> Self;
     fn forward(&self, i32);
     fn backward(&self, i32);
     fn gun_left(&self, i32);
@@ -19,7 +20,7 @@ pub trait BasicROV {
 }
 
 impl BasicROV for Vessel {
-    fn new(name: &'static str, rov_type: rov::Type) -> Self {
+    fn new(name: &'static str, rov_type: rov::Type, yielder: &Yielder<(), i32>) -> Self {
         Vessel { name: name.to_string(), rov_type: rov_type }
     }
 

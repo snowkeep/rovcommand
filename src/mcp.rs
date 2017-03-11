@@ -1,17 +1,18 @@
 extern crate rand;
-extern crate fringe;
 // This is the main simulation engine for rovcommand
 
 use message;
-use samples::basic_surface::BasicSurface;
+use samples::basic_surface::{self, BasicSurface};
 
 use std::sync::mpsc::Receiver;
 
 use self::rand::Rng;
-use self::fringe::{OwnedStack, Generator};
+use fringe::{OsStack, Generator};
 
 use rov;
 use rov::ROV;
+use rov::Type::*;
+use rov::basic::BasicROV;
 
 struct Rov<ROV> {
     vessel: ROV,
@@ -23,18 +24,22 @@ pub fn main(ctrl_rx: Receiver<message::Ctrl>) {
     let area_w: usize = 1024;
     let area_h: usize = 768;
 
-    let mut irng = rand::thread_rng();
-    let mut frng = rand::thread_rng();
 
     // get the list of rovs
-    let mut rovs = Vec::new();
-    // initialize all ROVs
+
+    // initialize all ROVs into separate co-routines
     // randomize starting locations and headings for rovs
-//    for mut rov in &rovs {
-//    }
-    rovs.push(
-        Rov {
-            vessel: BasicSurface::init(),
+ //   for rov in &rovs {
+    let stack = OsStack::new(1 << 16).unwrap();
+    let mut gen = Generator::new(stack, move |yielder, ()| {
+        let vessel = match basic_surface::MYTYPE {
+            BasicSurfaceROV => BasicSurface::init(BasicROV::new(basic_surface::MYNAME, basic_surface::MYTYPE, yielder)),
+            _ => panic!("This ROV type not yet implemented")
+        };
+        let mut irng = rand::thread_rng();
+        let mut frng = rand::thread_rng();
+        let myRov = Rov {
+            vessel: vessel,
             tactical: rov::Tactical {
                 x: irng.gen_range(0, area_w),
                 y: irng.gen_range(0, area_h),
@@ -42,14 +47,9 @@ pub fn main(ctrl_rx: Receiver<message::Ctrl>) {
                 gun_bearing: 0.0,
                 ..Default::default()
             }
-        }
-    );
-
-    // TODO: this is not going to work because I need to push the yielder down to the vessel methods
-    for rov in &rovs {
-        let stack = OwnedStack::new(1 << 16);
-        let mut gen = Generator::new(stack, move |yielder, ()| { rov.vessel.run() });
-    }
+        };
+    });
+  //  }
 
 
     // run simulation

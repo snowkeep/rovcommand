@@ -1,16 +1,16 @@
 use rov::{ROV, Vessel, Type};
 use rov::basic::BasicROV;
 
+pub const MYTYPE : Type = Type::BasicSurfaceROV;
+pub const MYNAME : &'static str = "Basic Surface Vessel";
+
 pub struct BasicSurface {
     pub vessel: Vessel
 }
 
 impl ROV for BasicSurface {
-    fn init() -> Self {
-        let mut vessel: Vessel = BasicROV::new("Basic Surface Vessel", Type::Surface);
-        BasicSurface {
-            vessel: vessel
-        }
+    fn init(vessel: Vessel) -> Self {
+        BasicSurface { vessel: vessel }
     }
 
     fn run(&self) {

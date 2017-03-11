@@ -1,4 +1,5 @@
 #[macro_use] extern crate conrod;
+extern crate fringe;
 
 use std::thread;
 use std::sync::mpsc;
