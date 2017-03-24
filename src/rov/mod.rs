@@ -1,4 +1,7 @@
 pub mod basic;
+pub mod physics;
+
+use fringe::generator::Yielder;
 
 /// Vessel tactical status
 #[derive(Default)]
@@ -78,9 +81,10 @@ pub enum Type {
     AdvanceSubmarineROV,
 }
 
-pub struct Vessel {
+pub struct Vessel<'a> {
     name: String,
     rov_type: Type,
+    yielder: &'a Yielder<(), i32>
 }
 
 /// trait to implement the ROV code
